@@ -419,3 +419,12 @@ strong { color: var(--ink); font-weight: 500; }
   .footer-top { grid-template-columns: 1fr; gap: 2.2rem; }
   .hero-actions .btn { width: 100%; justify-content: center; }
 }
+
+
+/* ---- Preferred-lender sponsor banner (loanDepot MSA placement) ---- */
+.sponsor { background: var(--ivory); border-top: 1px solid var(--line); padding: 3.4rem 0 3.6rem; text-align: center; }
+.sponsor .eyebrow { display: inline-block; margin-bottom: 1.25rem; }
+.sponsor-card { display: inline-flex; align-items: center; justify-content: center; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem 2.4rem; box-shadow: 0 12px 30px rgba(26,23,20,.10); transition: transform .3s ease, box-shadow .3s ease; }
+.sponsor-card:hover { transform: translateY(-3px); box-shadow: 0 18px 42px rgba(26,23,20,.16); }
+.sponsor-card img { display: block; width: 240px; max-width: 68vw; height: auto; }
+.sponsor-fine { max-width: 620px; margin: 1.4rem auto 0; font-size: .72rem; line-height: 1.55; letter-spacing: .02em; color: var(--stone); }
