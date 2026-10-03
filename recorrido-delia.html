@@ -119,6 +119,29 @@ a { color: inherit; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
+
+/* payment calculator (shown only when scripts run) */
+[hidden] { display: none !important; }
+.calc-link { display: block; width: 100%; margin-top: 1.5rem; min-height: 3.25rem; padding: 0.7rem 1rem; border: 1.5px solid var(--line); border-radius: 0.6rem; background: var(--bg); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+.calc { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 1.25rem; padding-top: 1.75rem; padding-bottom: 2rem; }
+.calc .field { display: block; margin-top: 1rem; }
+.calc .field > span { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--muted); margin-bottom: 0.3rem; }
+.calc input[type="text"], .calc select { display: block; width: 100%; min-height: 3rem; padding: 0.5rem 0.75rem; border: 1.5px solid var(--line); border-radius: 0.5rem; background: var(--bg); color: var(--ink); font: inherit; font-size: 1rem; }
+.calc .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; align-items: end; }
+.calc .check { display: grid; grid-template-columns: 1.5rem 1fr; gap: 0.6rem; align-items: start; margin-top: 1.25rem; cursor: pointer; }
+.calc .check input { width: 1.25rem; height: 1.25rem; margin: 0.2rem 0 0; accent-color: var(--accent); }
+.result { margin-top: 1.5rem; padding: 1.25rem; background: var(--brand); color: var(--on-brand); border-radius: 0.75rem; }
+.result-label { font-size: 0.875rem; color: var(--on-brand-soft); }
+.result-num { font-family: var(--display); font-size: 2.75rem; line-height: 1.05; margin-top: 0.2rem; }
+.result-num small { font-family: var(--body); font-size: 0.875rem; color: var(--on-brand-soft); }
+.breakdown { margin-top: 1rem; }
+.breakdown div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-top: 1px solid rgba(255,255,255,0.14); font-size: 0.9375rem; }
+.breakdown dt { color: var(--on-brand-soft); }
+.breakdown dd { font-weight: 500; white-space: nowrap; }
+.calc-notes { margin-top: 1rem; }
+.calc-notes p { font-size: 0.875rem; color: var(--muted); margin-top: 0.4rem; padding-left: 1.1rem; position: relative; }
+.calc-notes p::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--route); }
+@media (min-width: 40rem) { .calc { border: 1px solid var(--line); border-radius: 1rem; max-width: 37.5rem; margin-left: auto; margin-right: auto; } }
 </style>
 </head>
 <body>
@@ -169,6 +192,7 @@ a { color: inherit; }
       <dl class="pairs"><div><dt><span class="es">Impuestos</span><span class="en">Property taxes</span></dt><dd><span class="es">Por confirmar. El promedio en esta calle es de unos $6,300 al año.</span><span class="en">To be confirmed. The average on this street is about $6,300 a year.</span></dd></div><div><dt><span class="es">Cuota de HOA</span><span class="en">HOA dues</span></dt><dd><span class="es">Aprox. $750 al año, según un listado vecino. Por confirmar.</span><span class="en">About $750 a year, based on a neighbor&#x27;s listing. To be confirmed.</span></dd></div></dl>
       <h3><span class="es">Qué hay cerca</span><span class="en">What&#x27;s nearby</span></h3>
       <dl class="pairs"><div><dt><span class="es">Supermercados</span><span class="en">Groceries</span></dt><dd>H-E-B (US-290, Cypress), Chepes Super Market (Roberts Rd)</dd></div><div><dt><span class="es">Parques</span><span class="en">Parks</span></dt><dd>Zube Park, Hockley Recreational Complex</dd></div><div><dt><span class="es">Escuelas</span><span class="en">Schools</span></dt><dd>Waller ISD: Roberts Road Elementary, Schultz Junior High, Waller High School</dd></div><div><dt><span class="es">Acceso</span><span class="en">Main roads</span></dt><dd>US-290</dd></div></dl>
+      <button type="button" class="calc-link" data-home="1" hidden><span class="es">Calcular el pago mensual de esta casa</span><span class="en">Estimate the monthly payment for this home</span></button>
       <div class="then"><p class="label"><span class="es">Después</span><span class="en">Up next</span>, 4:00 – 5:00 PM</p><p class="addr">4314 Mt Davis Way</p><p class="place">Katy, TX 77449</p><a class="go ghost" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=4314%20Mt%20Davis%20Way%2C%20Katy%2C%20TX%2077449"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3L3 10.5l7.5 3L13.5 21 21 3z"/></svg><span><span class="es">Cómo llegar a la siguiente casa</span><span class="en">Get directions to the next home</span></span></a><a class="more" href="#casa-2"><span class="es">Ver los datos de la siguiente casa</span><span class="en">See the next home&#x27;s details</span></a></div>
     </div>
   </section>
@@ -193,6 +217,7 @@ a { color: inherit; }
       <dl class="pairs"><div><dt><span class="es">Impuestos</span><span class="en">Property taxes</span></dt><dd><span class="es">$8,359 al año (2025).</span><span class="en">$8,359 a year (2025).</span></dd></div><div><dt><span class="es">Cuota de HOA</span><span class="en">HOA dues</span></dt><dd><span class="es">$420 al año.</span><span class="en">$420 a year.</span></dd></div></dl>
       <h3><span class="es">Qué hay cerca</span><span class="en">What&#x27;s nearby</span></h3>
       <dl class="pairs"><div><dt><span class="es">Supermercados</span><span class="en">Groceries</span></dt><dd>Kroger Marketplace (Grand Pkwy), H-E-B, Walmart Supercenter (Morton Ranch Rd)</dd></div><div><dt><span class="es">Parques</span><span class="en">Parks</span></dt><dd>Mason Road Park</dd></div><div><dt><span class="es">Escuelas</span><span class="en">Schools</span></dt><dd>Katy ISD: Golbow Elementary (0.9 mi), McDonald Junior High (0.8 mi), Paetow High School (1.8 mi)</dd></div><div><dt><span class="es">Acceso</span><span class="en">Main roads</span></dt><dd><span class="es">Grand Parkway (99) y Clay Rd</span><span class="en">Grand Parkway (99) and Clay Rd</span></dd></div></dl>
+      <button type="button" class="calc-link" data-home="2" hidden><span class="es">Calcular el pago mensual de esta casa</span><span class="en">Estimate the monthly payment for this home</span></button>
       <div class="then"><p class="label"><span class="es">Después</span><span class="en">Up next</span>, 5:00 – 6:00 PM</p><p class="addr">3206 Lindenfield Dr</p><p class="place">Katy, TX 77449</p><a class="go ghost" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=3206%20Lindenfield%20Dr%2C%20Katy%2C%20TX%2077449"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3L3 10.5l7.5 3L13.5 21 21 3z"/></svg><span><span class="es">Cómo llegar a la siguiente casa</span><span class="en">Get directions to the next home</span></span></a><a class="more" href="#casa-3"><span class="es">Ver los datos de la siguiente casa</span><span class="en">See the next home&#x27;s details</span></a></div>
     </div>
   </section>
@@ -217,6 +242,7 @@ a { color: inherit; }
       <dl class="pairs"><div><dt><span class="es">Impuestos</span><span class="en">Property taxes</span></dt><dd><span class="es">Por confirmar.</span><span class="en">To be confirmed.</span></dd></div><div><dt><span class="es">Cuota de HOA</span><span class="en">HOA dues</span></dt><dd><span class="es">Por confirmar.</span><span class="en">To be confirmed.</span></dd></div></dl>
       <h3><span class="es">Qué hay cerca</span><span class="en">What&#x27;s nearby</span></h3>
       <dl class="pairs"><div><dt><span class="es">Supermercados</span><span class="en">Groceries</span></dt><dd>El Rancho Supermercado, Joe V&#x27;s Smart Shop (N Fry Rd)</dd></div><div><dt><span class="es">Parques</span><span class="en">Parks</span></dt><dd>Fry Road Park, Saums Pocket Park</dd></div><div><dt><span class="es">Escuelas</span><span class="en">Schools</span></dt><dd><span class="es">Katy ISD. Escuelas asignadas por confirmar.</span><span class="en">Katy ISD. Zoned schools to be confirmed.</span></dd></div><div><dt><span class="es">Acceso</span><span class="en">Main roads</span></dt><dd>N Fry Rd</dd></div></dl>
+      <button type="button" class="calc-link" data-home="3" hidden><span class="es">Calcular el pago mensual de esta casa</span><span class="en">Estimate the monthly payment for this home</span></button>
       <div class="then"><p class="label"><span class="es">Después</span><span class="en">Up next</span>, 6:00 – 6:30 PM</p><p class="addr">5341 Town Park Blvd</p><p class="place">Katy, TX 77493</p><a class="go ghost" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=5341%20Town%20Park%20Blvd%2C%20Katy%2C%20TX%2077493"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3L3 10.5l7.5 3L13.5 21 21 3z"/></svg><span><span class="es">Cómo llegar a la siguiente casa</span><span class="en">Get directions to the next home</span></span></a><a class="more" href="#casa-4"><span class="es">Ver los datos de la siguiente casa</span><span class="en">See the next home&#x27;s details</span></a></div>
     </div>
   </section>
@@ -241,6 +267,7 @@ a { color: inherit; }
       <dl class="pairs"><div><dt><span class="es">Impuestos</span><span class="en">Property taxes</span></dt><dd><span class="es">$5,578 al año (2025).</span><span class="en">$5,578 a year (2025).</span></dd></div><div><dt><span class="es">Cuota de HOA</span><span class="en">HOA dues</span></dt><dd><span class="es">$240 al año.</span><span class="en">$240 a year.</span></dd></div></dl>
       <h3><span class="es">Qué hay cerca</span><span class="en">What&#x27;s nearby</span></h3>
       <dl class="pairs"><div><dt><span class="es">Supermercados</span><span class="en">Groceries</span></dt><dd>Brookshire Brothers (Franz Rd), H-E-B (Nelson Way)</dd></div><div><dt><span class="es">Parques</span><span class="en">Parks</span></dt><dd>Mary Jo Peckham Park, Katy City Park</dd></div><div><dt><span class="es">Escuelas</span><span class="en">Schools</span></dt><dd>Katy ISD: Hutsell Elementary (0.4 mi), Katy Junior High (0.3 mi), Katy High School (1.6 mi)</dd></div><div><dt><span class="es">Acceso</span><span class="en">Main roads</span></dt><dd><span class="es">I-10 y Grand Parkway (99)</span><span class="en">I-10 and Grand Parkway (99)</span></dd></div></dl>
+      <button type="button" class="calc-link" data-home="4" hidden><span class="es">Calcular el pago mensual de esta casa</span><span class="en">Estimate the monthly payment for this home</span></button>
       <div class="then"><p class="label"><span class="es">Después</span><span class="en">Up next</span>, 6:00 – 6:45 PM</p><p class="addr">2726 Yestereve Ct</p><p class="place">Houston, TX 77084</p><a class="go ghost" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=2726%20Yestereve%20Ct%2C%20Houston%2C%20TX%2077084"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3L3 10.5l7.5 3L13.5 21 21 3z"/></svg><span><span class="es">Cómo llegar a la siguiente casa</span><span class="en">Get directions to the next home</span></span></a><a class="more" href="#casa-5"><span class="es">Ver los datos de la siguiente casa</span><span class="en">See the next home&#x27;s details</span></a></div>
     </div>
   </section>
@@ -265,7 +292,53 @@ a { color: inherit; }
       <dl class="pairs"><div><dt><span class="es">Impuestos</span><span class="en">Property taxes</span></dt><dd><span class="es">Por confirmar. El promedio en esta calle es de unos $4,800 a $4,900 al año.</span><span class="en">To be confirmed. The average on this street is about $4,800 to $4,900 a year.</span></dd></div><div><dt><span class="es">Cuota de HOA</span><span class="en">HOA dues</span></dt><dd><span class="es">Por confirmar.</span><span class="en">To be confirmed.</span></dd></div></dl>
       <h3><span class="es">Qué hay cerca</span><span class="en">What&#x27;s nearby</span></h3>
       <dl class="pairs"><div><dt><span class="es">Supermercados</span><span class="en">Groceries</span></dt><dd>H-E-B (N Fry Rd, Hwy 6 N), Randalls (Clay Rd)</dd></div><div><dt><span class="es">Parques</span><span class="en">Parks</span></dt><dd>Cullen Park, Bear Creek Pioneers Park</dd></div><div><dt><span class="es">Escuelas</span><span class="en">Schools</span></dt><dd><span class="es">Distrito y escuelas asignadas por confirmar.</span><span class="en">District and zoned schools to be confirmed.</span></dd></div><div><dt><span class="es">Acceso</span><span class="en">Main roads</span></dt><dd><span class="es">Clay Rd y Hwy 6</span><span class="en">Clay Rd and Hwy 6</span></dd></div></dl>
+      <button type="button" class="calc-link" data-home="5" hidden><span class="es">Calcular el pago mensual de esta casa</span><span class="en">Estimate the monthly payment for this home</span></button>
       <div class="then"><p class="addr"><span class="es">Esta es la última casa del recorrido.</span><span class="en">This is the last home on the tour.</span></p><p class="place"><span class="es">Cuéntele a su agente cuál le gustó más.</span><span class="en">Tell your agent which one you liked best.</span></p><a class="more" href="#ruta"><span class="es">Volver a la ruta</span><span class="en">Back to the route</span></a></div>
+    </div>
+  </section>
+
+  <section class="calc" id="calculadora" hidden>
+    <div class="wrap">
+      <h2 class="section-title"><span class="es">Calcule su pago mensual</span><span class="en">Estimate your monthly payment</span></h2>
+      <p class="hint"><span class="es">Es un estimado. Cambie los números para ver cómo cambia el pago.</span><span class="en">This is an estimate. Change the numbers to see how the payment changes.</span></p>
+      <label class="field"><span><span class="es">Casa</span><span class="en">Home</span></span>
+        <select id="c-home">
+          <option value="1">1. 24035 Wandering Brook Dr</option>
+          <option value="2">2. 4314 Mt Davis Way</option>
+          <option value="3">3. 3206 Lindenfield Dr</option>
+          <option value="4">4. 5341 Town Park Blvd</option>
+          <option value="5">5. 2726 Yestereve Ct</option>
+        </select></label>
+      <label class="field"><span><span class="es">Precio de la casa ($)</span><span class="en">Home price ($)</span></span><input type="text" inputmode="numeric" id="c-price" value="" autocomplete="off"></label>
+      <div class="two">
+        <label class="field"><span><span class="es">Enganche (%)</span><span class="en">Down payment (%)</span></span><input type="text" inputmode="decimal" id="c-down" value="3.5" autocomplete="off"></label>
+        <label class="field"><span><span class="es">Interés (%), ejemplo</span><span class="en">Interest rate (%), example</span></span><input type="text" inputmode="decimal" id="c-rate" value="7.25" autocomplete="off"></label>
+      </div>
+      <label class="field"><span><span class="es">Plazo</span><span class="en">Loan term</span></span>
+        <select id="c-term"><option value="30">30 años / years</option><option value="15">15 años / years</option></select></label>
+      <div class="two">
+        <label class="field"><span><span class="es">Impuestos al año ($)</span><span class="en">Property taxes per year ($)</span></span><input type="text" inputmode="numeric" id="c-tax" value="" autocomplete="off"></label>
+        <label class="field"><span><span class="es">HOA al año ($)</span><span class="en">HOA per year ($)</span></span><input type="text" inputmode="numeric" id="c-hoa" value="" autocomplete="off"></label>
+      </div>
+      <label class="field"><span><span class="es">Seguro de la casa al año ($)</span><span class="en">Home insurance per year ($)</span></span><input type="text" inputmode="numeric" id="c-ins" value="" autocomplete="off"></label>
+      <label class="check"><input type="checkbox" id="c-fha" checked><span><span class="es">Préstamo FHA (incluye su seguro hipotecario)</span><span class="en">FHA loan (includes its mortgage insurance)</span></span></label>
+
+      <div class="result" aria-live="polite">
+        <p class="result-label"><span class="es">Pago mensual estimado</span><span class="en">Estimated monthly payment</span></p>
+        <p class="result-num" id="c-total">$0</p>
+        <dl class="breakdown">
+          <div><dt><span class="es">Capital e interés</span><span class="en">Principal and interest</span></dt><dd id="c-pi">$0</dd></div>
+          <div><dt><span class="es">Impuestos</span><span class="en">Property taxes</span></dt><dd id="c-mtax">$0</dd></div>
+          <div><dt><span class="es">Seguro de la casa</span><span class="en">Home insurance</span></dt><dd id="c-mins">$0</dd></div>
+          <div><dt>HOA</dt><dd id="c-mhoa">$0</dd></div>
+          <div id="c-mip-row"><dt><span class="es">Seguro hipotecario FHA</span><span class="en">FHA mortgage insurance</span></dt><dd id="c-mip">$0</dd></div>
+          <div><dt><span class="es">Enganche</span><span class="en">Down payment</span></dt><dd id="c-downamt">$0</dd></div>
+          <div><dt><span class="es">Monto del préstamo</span><span class="en">Loan amount</span></dt><dd id="c-loan">$0</dd></div>
+        </dl>
+      </div>
+      <div class="calc-notes" id="c-notes"></div>
+      <p class="fine es">Estimado solamente. No es una oferta ni una aprobación de préstamo. La tasa es un ejemplo cercano al promedio nacional de esta semana; su prestamista le dará su tasa y sus costos reales. Con FHA se suma al préstamo la prima inicial de 1.75% y se incluye el seguro hipotecario mensual. No incluye los costos de cierre.</p>
+      <p class="fine en">Estimate only. This is not a loan offer or approval. The rate is an example near this week's national average; your lender will give you your actual rate and costs. With FHA, the 1.75% upfront premium is added to the loan and the monthly mortgage insurance is included. Closing costs are not included.</p>
     </div>
   </section>
   <section class="closing">
@@ -282,6 +355,94 @@ a { color: inherit; }
     </div>
   </section>
 </main>
+<script>
+/* Monthly payment calculator. If this script does not run, the calculator stays hidden. */
+(function () {
+  try {
+    var HOMES = {
+      1: { price: 240000, tax: 6300, taxEst: true, hoa: 750 },
+      2: { price: 330000, tax: 8359, hoa: 420 },
+      3: { price: null, tax: null, hoa: null },
+      4: { price: 249999, tax: 5578, hoa: 240 },
+      5: { price: 215000, tax: 4850, taxEst: true, hoa: null }
+    };
+    function $(id) { return document.getElementById(id); }
+    function num(id) {
+      var v = parseFloat(String($(id).value).replace(/[^0-9.]/g, ""));
+      return isFinite(v) ? v : 0;
+    }
+    function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+    function bi(es, en) { return '<span class="es">' + es + '</span><span class="en">' + en + "</span>"; }
+    function show(n) { return n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""; }
+
+    function fill(n) {
+      var h = HOMES[n];
+      $("c-home").value = String(n);
+      $("c-price").value = show(h.price);
+      $("c-tax").value = show(h.tax);
+      $("c-hoa").value = show(h.hoa);
+      calc();
+    }
+
+    function calc() {
+      var h = HOMES[$("c-home").value] || {};
+      var price = num("c-price");
+      var downPct = Math.min(num("c-down"), 100);
+      var rate = num("c-rate");
+      var years = parseInt($("c-term").value, 10) || 30;
+      var fha = $("c-fha").checked;
+
+      var down = price * downPct / 100;
+      var base = Math.max(price - down, 0);
+      var loan = fha ? base * 1.0175 : base;          /* FHA upfront premium is added to the loan */
+      var n = years * 12, r = rate / 100 / 12;
+      var pi = loan <= 0 ? 0 : (r > 0 ? loan * r / (1 - Math.pow(1 + r, -n)) : loan / n);
+
+      var ltv = price > 0 ? base / price : 0;
+      var mipRate = years > 15 ? (ltv > 0.95 ? 0.0055 : 0.0050) : (ltv > 0.90 ? 0.0040 : 0.0015);
+      var mip = fha ? base * mipRate / 12 : 0;
+
+      var tax = num("c-tax") / 12, ins = num("c-ins") / 12, hoa = num("c-hoa") / 12;
+      var total = pi + mip + tax + ins + hoa;
+
+      $("c-total").innerHTML = price > 0 ? money(total) + ' <small>' + bi("al mes", "per month") + "</small>" : "$0";
+      $("c-pi").textContent = money(pi);
+      $("c-mtax").textContent = money(tax);
+      $("c-mins").textContent = money(ins);
+      $("c-mhoa").textContent = money(hoa);
+      $("c-mip").textContent = money(mip);
+      $("c-mip-row").style.display = fha ? "" : "none";
+      $("c-downamt").textContent = money(down);
+      $("c-loan").textContent = money(loan);
+
+      var notes = [];
+      if (price <= 0) notes.push(bi("Escriba el precio de la casa. Su agente se lo confirmará.", "Enter the home price. Your agent will confirm it."));
+      if (num("c-tax") <= 0) notes.push(bi("Faltan los impuestos de esta casa. El pago real será más alto.", "Property taxes are missing for this home. The real payment will be higher."));
+      else if (h.taxEst && num("c-tax") === h.tax) notes.push(bi("Los impuestos son un estimado con el promedio de la calle.", "Taxes are an estimate based on the street average."));
+      if (num("c-ins") <= 0) notes.push(bi("No incluye el seguro de la casa. Agregue su cotización.", "Home insurance is not included. Add your quote."));
+      if (fha && downPct < 3.5) notes.push(bi("FHA pide al menos 3.5% de enganche.", "FHA requires at least 3.5% down."));
+      if (!fha && downPct < 20) notes.push(bi("Con menos de 20% de enganche, un préstamo convencional suele pedir seguro hipotecario (PMI). No está incluido aquí.", "With less than 20% down, a conventional loan usually requires mortgage insurance (PMI). It is not included here."));
+      $("c-notes").innerHTML = notes.map(function (t) { return "<p>" + t + "</p>"; }).join("");
+    }
+
+    var section = $("calculadora");
+    section.hidden = false;
+    var links = document.querySelectorAll(".calc-link");
+    for (var i = 0; i < links.length; i++) {
+      links[i].hidden = false;
+      links[i].addEventListener("click", function () {
+        fill(this.getAttribute("data-home"));
+        section.scrollIntoView({ block: "start" });
+      });
+    }
+    $("c-home").addEventListener("change", function () { fill(this.value); });
+    ["c-price", "c-down", "c-rate", "c-tax", "c-hoa", "c-ins"].forEach(function (id) { $(id).addEventListener("input", calc); });
+    $("c-term").addEventListener("change", calc);
+    $("c-fha").addEventListener("change", calc);
+    fill(1);
+  } catch (e) { /* leave the calculator hidden */ }
+})();
+</script>
 <script>
 /* Link expires Monday, October 5, 2026 at 5:00 PM Central. If this script does not run, the page simply stays visible. */
 (function () {
