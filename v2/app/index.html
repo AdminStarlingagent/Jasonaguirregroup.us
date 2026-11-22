@@ -24,9 +24,17 @@ img{max-width:100%;display:block}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--red) 55%,transparent);outline-offset:2px}
 .stage{display:grid;grid-template-columns:minmax(0,1fr);height:100%}
 .sbx{display:none}
+.stage{grid-template-rows:auto minmax(0,1fr)}
+.sbx-m{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#17161C;color:#fff;padding:6px 12px;font-size:12.5px;font-weight:700}
+.sbx-m span{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbx-m span i{width:8px;height:8px;border-radius:50%;background:#34D399;flex:none}
+.sbx-m .seg{flex-wrap:nowrap;gap:4px}
+.sbx-m .seg button{min-height:32px;padding:4px 12px;background:#2A2930;color:#fff;border-color:#4A4952}
+.sbx-m .seg button[aria-pressed=true]{background:#fff;color:#17161C;border-color:#fff}
 .device{position:relative;height:100%;background:#fff;overflow:hidden;contain:paint;display:flex;flex-direction:column}
 @media(min-width:960px){
-.stage{grid-template-columns:minmax(300px,420px) 430px;justify-content:center;gap:48px;padding:28px 32px;height:100%}
+.sbx-m{display:none}
+.stage{grid-template-rows:none;grid-template-columns:minmax(300px,420px) 430px;justify-content:center;gap:48px;padding:28px 32px;height:100%}
 .sbx{display:flex;flex-direction:column;gap:18px;align-self:center;max-height:100%;overflow:auto;padding-right:4px}
 .device{border-radius:36px;box-shadow:0 0 0 10px #17161C,0 24px 60px rgba(23,22,28,.28);height:min(880px,100%);align-self:center}
 }
@@ -1397,26 +1405,27 @@ select.ap-in{padding-right:40px;background:#fff url("data:image/svg+xml;utf8,<sv
 </head>
 <body>
 <div class="stage">
+  <div class="sbx-m" aria-label="Sandbox"><span><i></i><b data-es="Versión de prueba" data-en="Test version">Versión de prueba</b></span><div class="seg" id="sbxLangM" role="group" aria-label="Idioma / Language"><button type="button" data-l="es" aria-pressed="true">Español</button><button type="button" data-l="en" aria-pressed="false">English</button></div></div>
   <aside class="sbx" aria-label="Sandbox">
-    <span class="pill"><i></i>Sandbox · v2 prototype</span>
-    <h1>JAG Homes v2, client app</h1>
-    <p>Rebuilt from scratch by builder agents following the JAG Bible. Sample data only. Nothing here connects to the live site, the database, Follow Up Boss or any client.</p>
+    <span class="pill"><i></i><span data-es="Versión de prueba · v2" data-en="Test version · v2">Versión de prueba · v2</span></span>
+    <h1 data-es="JAG Homes v2, la app para clientes" data-en="JAG Homes v2, client app">JAG Homes v2, la app para clientes</h1>
+    <p data-es="Hecha desde cero siguiendo la Biblia de JAG. Todo es de ejemplo: nada se conecta al sitio real, a la base de datos, a Follow Up Boss ni a clientes." data-en="Rebuilt from scratch following the JAG Bible. Sample data only. Nothing here connects to the live site, the database, Follow Up Boss or any client.">Hecha desde cero siguiendo la Biblia de JAG. Todo es de ejemplo: nada se conecta al sitio real, a la base de datos, a Follow Up Boss ni a clientes.</p>
     <div class="sbx-card">
-      <h2>Jump to a screen</h2>
+      <h2 data-es="Ir a una pantalla" data-en="Jump to a screen">Ir a una pantalla</h2>
       <div class="sbx-links" id="sbxLinks"></div>
     </div>
     <div class="sbx-card">
-      <h2>View as</h2>
+      <h2 data-es="Ver como" data-en="View as">Ver como</h2>
       <div class="seg" id="sbxWho">
-        <button data-who="client" aria-pressed="true">Client with an account</button>
-        <button data-who="guest" aria-pressed="false">First-time visitor</button>
+        <button data-who="client" aria-pressed="true" data-es="Cliente con cuenta" data-en="Client with an account">Cliente con cuenta</button>
+        <button data-who="guest" aria-pressed="false" data-es="Visitante nuevo" data-en="First-time visitor">Visitante nuevo</button>
       </div>
-      <h2>Language (for review; clients pick it once in the app)</h2>
+      <h2 data-es="Idioma (para revisar; el cliente lo elige una vez en la app)" data-en="Language (for review; clients pick it once in the app)">Idioma (para revisar; el cliente lo elige una vez en la app)</h2>
       <div class="seg" id="sbxLang">
         <button data-l="es" aria-pressed="true">Español</button>
         <button data-l="en" aria-pressed="false">English</button>
       </div>
-      <small>All homes, prices and people on these screens are sample data.</small>
+      <small data-es="Todas las casas, precios y personas son de ejemplo." data-en="All homes, prices and people on these screens are sample data.">Todas las casas, precios y personas son de ejemplo.</small>
     </div>
   </aside>
   <main class="device" id="device">
@@ -1793,12 +1802,14 @@ $('fab').addEventListener('click', () => V2.openLola && V2.openLola({listing: cu
 /* ---------- sandbox panel ---------- */
 V2.setLang = l => { V2.lang = l; document.documentElement.lang = l; V2.save(); syncPanel(); render(); };
 function syncPanel(){
-  document.querySelectorAll('#sbxLang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === V2.lang));
+  document.querySelectorAll('#sbxLang button, #sbxLangM button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === V2.lang));
+  document.querySelectorAll('[data-es][data-en]').forEach(el => { el.textContent = el.dataset[V2.lang] || el.dataset.es; });
   document.querySelectorAll('#sbxWho button').forEach(b => b.setAttribute('aria-pressed', b.dataset.who === V2.state.who));
-  const links = [['home','Inicio · Home'],['search','Buscar · Search'],['listing-2','Casa · Listing'],['reels','Videos · Reels'],['saved','Guardadas · Saved'],['apply','Solicitud · Loan app'],['account','Mi cuenta · Account'],['tracker','Mi proceso · Tracker'],['onboarding','Primera vez · First run']];
-  $('sbxLinks').innerHTML = links.map(([h,l]) => `<button type="button" data-hash="${h}">${l}</button>`).join('') + `<button type="button" data-lola="">Lola chat</button>`;
+  const links = [['home','Inicio','Home'],['search','Buscar','Search'],['listing-2','Casa','Listing'],['reels','Videos','Videos'],['saved','Guardadas','Saved'],['apply','Solicitud','Loan app'],['account','Mi cuenta','Account'],['tracker','Mi proceso','Tracker'],['onboarding','Primera vez','First run']].map(([h,es,en]) => [h, V2.t(es,en)]);
+  $('sbxLinks').innerHTML = links.map(([h,l]) => `<button type="button" data-hash="${h}">${l}</button>`).join('') + `<button type="button" data-lola="">${V2.t('Chat con Lola','Lola chat')}</button>`;
 }
 $('sbxLinks').addEventListener('click', e => { const b = e.target.closest('[data-hash]'); if (b) { location.hash = b.dataset.hash; if (location.hash.slice(1) === b.dataset.hash) render(); } });
+$('sbxLangM').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) V2.setLang(b.dataset.l); });
 $('sbxLang').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) V2.setLang(b.dataset.l); });
 $('sbxWho').addEventListener('click', e => { const b = e.target.closest('[data-who]'); if (!b) return; V2.state.who = b.dataset.who; V2.wipeClientData(); V2.useDemo(); if (b.dataset.who==='guest'){ V2.state.onboarded=false; V2.state.guestSaves=0; V2.state.saved=new Set(); V2.state.prefs={region:'houston', areas:[], beds:0, max:0, type:'any'}; } else { V2.state.saved = new Set([2,3,10]); V2.state.onboarded=true; } V2.save(); syncPanel(); location.hash = b.dataset.who==='guest' ? 'onboarding' : 'home'; render(); });
 V2._boot = () => { const me = LS.get('me', null); if (me && V2.state.who === 'client') V2.setClient(me, false); document.documentElement.lang = V2.lang; syncPanel(); render(); };

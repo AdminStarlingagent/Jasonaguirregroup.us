@@ -11,14 +11,18 @@
 :root{--red:#C8102E;--ink:#17161C;--body:#4B4955;--mute:#787683;--line:#E6E5EA;--canvas:#F6F5F7;--blue:#2A8FD6}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.55 'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-.wrap{max-width:980px;margin:0 auto;padding:clamp(24px,5vw,56px) max(16px,4vw)}
+.wrap{max-width:980px;margin:0 auto;padding:clamp(20px,5vw,56px) max(16px,4vw)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em}
 .brand i{width:38px;height:38px;border-radius:10px;background:var(--ink);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px;border-bottom:3px solid var(--red)}
+.lang{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+.lang button{border:0;background:none;border-radius:999px;min-height:40px;padding:0 16px;font:inherit;font-weight:700;font-size:15px;color:var(--body);cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:#fff}
+.lang button:focus-visible{outline:3px solid #9FD0F5;outline-offset:2px}
 .pill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;margin-top:22px}
 .pill b{width:8px;height:8px;border-radius:50%;background:#34D399}
 h1{font-size:clamp(30px,5vw,46px);line-height:1.06;letter-spacing:-.02em;margin:14px 0 10px;text-wrap:balance}
-.lead{color:var(--body);max-width:62ch;margin:0 0 6px}
-.lead.en{color:var(--mute);font-size:15px}
+.lead{color:var(--body);max-width:62ch;margin:0}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:28px 0}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
 .card:hover{border-color:var(--ink);transform:translateY(-2px)}
@@ -38,37 +42,59 @@ ol li{margin:6px 0}
 </head>
 <body>
 <main class="wrap">
-  <div class="brand"><i>JAG</i>Jason Aguirre Group</div>
-  <span class="pill"><b></b>Versión de prueba · datos de ejemplo</span>
-  <h1>JAG v2: el Hub y la app, hechos de nuevo</h1>
-  <p class="lead">Queremos su opinión. Estas son versiones de prueba del Agent Hub y de la app JAG Homes, rehechas desde cero. Todo es de ejemplo: no hay clientes reales y nada se conecta a Follow Up Boss ni al Hub de verdad. Pruébelas con calma y díganos si les parecen mejor que lo que usamos hoy.</p>
-  <p class="lead en">Test versions of the Agent Hub and the JAG Homes app, rebuilt from scratch. Sample data only; nothing connects to Follow Up Boss or the real Hub.</p>
+  <div class="top">
+    <div class="brand"><i>JAG</i>Jason Aguirre Group</div>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" id="lEs" data-l="es" aria-pressed="true">Español</button>
+      <button type="button" id="lEn" data-l="en" aria-pressed="false">English</button>
+    </div>
+  </div>
+  <span class="pill"><b></b><span data-es="Versión de prueba · datos de ejemplo" data-en="Test version · sample data">Versión de prueba · datos de ejemplo</span></span>
+  <h1 data-es="JAG v2: el Hub y la app, hechos de nuevo" data-en="JAG v2: the Hub and the app, rebuilt">JAG v2: el Hub y la app, hechos de nuevo</h1>
+  <p class="lead" data-es="Queremos su opinión. Estas son versiones de prueba del Agent Hub y de la app JAG Homes, rehechas desde cero. Todo es de ejemplo: no hay clientes reales y nada se conecta a Follow Up Boss ni al Hub de verdad. Pruébelas con calma y díganos si les parecen mejor que lo que usamos hoy." data-en="We want your opinion. These are test versions of the Agent Hub and the JAG Homes app, rebuilt from scratch. Everything is sample data: there are no real clients and nothing connects to Follow Up Boss or the real Hub. Take your time trying them and tell us if they feel better than what we use today.">Queremos su opinión. Estas son versiones de prueba del Agent Hub y de la app JAG Homes, rehechas desde cero. Todo es de ejemplo: no hay clientes reales y nada se conecta a Follow Up Boss ni al Hub de verdad. Pruébelas con calma y díganos si les parecen mejor que lo que usamos hoy.</p>
 
   <div class="cards">
     <a class="card hub" href="hub/">
-      <span class="tag">Para el equipo · For the team</span>
+      <span class="tag" data-es="Para el equipo" data-en="For the team">Para el equipo</span>
       <h2>Agent Hub v2</h2>
-      <p>Mi Día como Follow Up Boss, perfil del cliente, mensajes, llamadas con un clic, Matrix, ofertas y firmas, cierres y su marcador.</p>
-      <span class="go">Abrir el Hub v2</span>
+      <p data-es="Mi Día como Follow Up Boss, perfil del cliente, mensajes, llamadas con un clic, Matrix, ofertas y firmas, cierres y su marcador." data-en="Mi Día like Follow Up Boss, client profile, messages, one-click calling, Matrix, offers and e-sign, closings and your scoreboard.">Mi Día como Follow Up Boss, perfil del cliente, mensajes, llamadas con un clic, Matrix, ofertas y firmas, cierres y su marcador.</p>
+      <span class="go" data-es="Abrir el Hub v2" data-en="Open Hub v2">Abrir el Hub v2</span>
     </a>
     <a class="card app" href="app/">
-      <span class="tag">Lo que ven los clientes · What clients see</span>
+      <span class="tag" data-es="Lo que ven los clientes" data-en="What clients see">Lo que ven los clientes</span>
       <h2>JAG Homes v2</h2>
-      <p>Búsqueda con mapa, páginas de casas, videos, la solicitud de préstamo, el progreso del cliente y el chat con Lola.</p>
-      <span class="go">Abrir la app v2</span>
+      <p data-es="Búsqueda con mapa, páginas de casas, videos, la solicitud de préstamo, el progreso del cliente y el chat con Lola." data-en="Map search, home pages, videos, the loan application, the client's progress tracker and the Lola chat.">Búsqueda con mapa, páginas de casas, videos, la solicitud de préstamo, el progreso del cliente y el chat con Lola.</p>
+      <span class="go" data-es="Abrir la app v2" data-en="Open app v2">Abrir la app v2</span>
     </a>
   </div>
 
   <div class="box">
-    <h3>Cómo probarlo</h3>
+    <h3 data-es="Cómo probarlo" data-en="How to try it">Cómo probarlo</h3>
     <ol>
-      <li><b>Hub:</b> arriba, en la franja negra, elija su nombre en "Ver como". El Hub se pone en su idioma y con sus menús.</li>
-      <li>Pruebe lo de todos los días: abrir Mi Día, llamar a un cliente, mandar un texto, mover a alguien de etapa, "Otra hora" y "Ya no hace falta".</li>
-      <li><b>App:</b> en computadora, use el panel de la izquierda para ver la app como cliente o como visitante nuevo. En el teléfono se abre como la app.</li>
-      <li>Después díganle a Jason: ¿qué le gustó?, ¿qué le confundió?, ¿qué le falta?, y ¿es mejor que lo que usamos hoy?</li>
+      <li data-es="El idioma que elija aquí arriba se usa en el Hub y en la app. Allá también puede cambiarlo con los botones Español / English de la franja negra." data-en="The language you pick up here is used in the Hub and the app. You can also switch it there with the Español / English buttons in the black strip.">El idioma que elija aquí arriba se usa en el Hub y en la app. Allá también puede cambiarlo con los botones Español / English de la franja negra.</li>
+      <li data-es="Hub: en la franja negra, elija su nombre en &quot;Ver como&quot; para ver sus menús." data-en="Hub: in the black strip, pick your name in &quot;View as&quot; to see your own menus.">Hub: en la franja negra, elija su nombre en "Ver como" para ver sus menús.</li>
+      <li data-es="Pruebe lo de todos los días: abrir Mi Día, llamar a un cliente, mandar un texto, mover a alguien de etapa, &quot;Otra hora&quot; y &quot;Ya no hace falta&quot;." data-en="Try your everyday work: open Mi Día, call a client, send a text, move someone to a new stage, &quot;Otra hora&quot; (later) and &quot;Ya no hace falta&quot; (not needed).">Pruebe lo de todos los días: abrir Mi Día, llamar a un cliente, mandar un texto, mover a alguien de etapa, "Otra hora" y "Ya no hace falta".</li>
+      <li data-es="App: en computadora, use el panel de la izquierda para verla como cliente o como visitante nuevo. En el teléfono se abre como la app." data-en="App: on a computer, use the panel on the left to see it as a client or as a first-time visitor. On a phone it opens like the app.">App: en computadora, use el panel de la izquierda para verla como cliente o como visitante nuevo. En el teléfono se abre como la app.</li>
+      <li data-es="Después díganle a Jason: ¿qué le gustó?, ¿qué le confundió?, ¿qué le falta?, y ¿es mejor que lo que usamos hoy?" data-en="Then tell Jason: what did you like, what confused you, what's missing, and is it better than what we use today?">Después díganle a Jason: ¿qué le gustó?, ¿qué le confundió?, ¿qué le falta?, y ¿es mejor que lo que usamos hoy?</li>
     </ol>
   </div>
-  <p class="note">Versión de prueba del Jason Aguirre Group · eXp Realty. Los nombres de clientes, casas y números son inventados.</p>
+  <p class="note" data-es="Versión de prueba del Jason Aguirre Group · eXp Realty. Los nombres de clientes, casas y números son inventados." data-en="Test version by the Jason Aguirre Group · eXp Realty. Client names, homes and numbers are made up.">Versión de prueba del Jason Aguirre Group · eXp Realty. Los nombres de clientes, casas y números son inventados.</p>
 </main>
+<script>
+{
+  const get = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+  const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const apply = l => {
+    document.documentElement.lang = l;
+    document.title = l === 'en' ? 'JAG v2 · Test version' : 'JAG v2 · Versión de prueba';
+    document.querySelectorAll('[data-es][data-en]').forEach(el => { el.textContent = el.dataset[l]; });
+    document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === l)));
+  };
+  /* one choice, used by the app (jagv2:lang) and the Hub (jaghub:force) too */
+  const set = l => { put('jagv2:review-lang', l); put('jagv2:lang', l); put('jaghub:force', l); apply(l); };
+  document.querySelector('.lang').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) set(b.dataset.l); });
+  apply(get('jagv2:review-lang') || 'es');
+}
+</script>
 </body>
 </html>

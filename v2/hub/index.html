@@ -30,7 +30,11 @@ img{max-width:100%;display:block}
 .sbx .dot{width:8px;height:8px;border-radius:50%;background:#34D399;flex:none}
 .sbx select{background:#2A2930;color:#fff;border:1px solid #444;border-radius:8px;padding:4px 8px;font-size:13px;min-height:30px}
 .sbx span.m{color:#B9B7C2}
-@media(max-width:899px){.sbx span.m{display:none}.sbx label.m{display:none}.sbx select{flex:1;max-width:260px}}
+.sbx-lang{display:inline-flex;gap:4px;margin-left:auto;flex:none}
+.sbx-lang button{min-height:30px;padding:0 12px;border-radius:999px;border:1px solid #4A4952;background:#2A2930;color:#fff;font-size:13px;font-weight:700}
+.sbx-lang button[aria-pressed=true]{background:#fff;color:#17161C;border-color:#fff}
+@media(max-width:899px){.sbx span.m{display:none}.sbx label.m{display:none}.sbx select{flex:1 1 120px;min-width:110px;max-width:260px}}
+@media(max-width:520px){.sbx>b{display:none}.sbx{gap:8px;padding:0 10px}}
 .top{grid-area:top;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 14px;position:relative;z-index:20}
 .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
 .brand i{width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.02em;border-bottom:3px solid var(--jag)}
@@ -1668,8 +1672,9 @@ p.mx-pl-a{margin:0 0 10px}
 <div class="app" id="app">
   <div class="sbx" aria-label="Sandbox">
     <i class="dot"></i><b>Sandbox · Agent Hub v2</b><span class="m">Datos de ejemplo. Nada se conecta a FUB, Twilio ni clientes reales.</span>
-    <label for="sbxUser" class="m">Ver como:</label>
+    <label for="sbxUser" class="m" id="sbxAs">Ver como:</label>
     <select id="sbxUser"></select>
+    <span class="sbx-lang" id="sbxLang" role="group" aria-label="Idioma / Language"><button type="button" data-flang="es">Español</button><button type="button" data-flang="en">English</button></span>
   </div>
   <header class="top">
     <div class="brand"><i>JAG</i>Hub <span>· Jason Aguirre Group</span></div>
@@ -1889,7 +1894,7 @@ H.isAdmin = (u = H.me()) => !!u && (H.hasJob('owner', u) || !!u.admin);
 H.avatar = (u, cls='') => u ? `<span class="av ${cls}" style="background:${u.color}" title="${H.esc(u.name)}">${u.initials}</span>` : `<span class="av ${cls}" style="background:#B9B7C2" title="${H.t('Nadie','Nobody')}">—</span>`;
 let meId = LS.get('me', 'u2');
 H.me = () => H.user(meId) || H.team[1];
-const langOf = () => LS.get('lang:' + meId, H.me().lang);
+const langOf = () => LS.get('force', null) || LS.get('lang:' + meId, H.me().lang);
 
 /* ---------- stages exactly as in Follow Up Boss ---------- */
 H.STAGES = ['New Lead','Lead','Hot Prospect','Applied','Showing Homes','Under Contract','Closed','Credit Repair','Nurture'];
@@ -2098,7 +2103,7 @@ function renderMe(){
 }
 $('meBtn').addEventListener('click', e => { e.stopPropagation(); const on = !$('mePop').classList.contains('on'); closePops(); if (on){ renderMe(); $('mePop').classList.add('on'); } });
 $('mePop').addEventListener('click', e => { e.stopPropagation();
-  const l = e.target.closest('[data-setlang]'); if (l){ LS.set('lang:' + meId, l.dataset.setlang); applyUser(); closePops(); return; }
+  const l = e.target.closest('[data-setlang]'); if (l){ LS.set('lang:' + meId, l.dataset.setlang); if (LS.get('force', null)) LS.set('force', l.dataset.setlang); applyUser(); closePops(); return; }
   if (e.target.closest('[data-report]')){ closePops(); H.sheet(`<h2>${H.t('Reportar un problema','Report a problem')}</h2><p class="muted" style="margin:0 0 14px">${H.t('Cuéntenos qué pasó. Mandamos la pantalla y la hora solos.','Tell us what happened. We send the screen and time automatically.')}</p>
     <div class="field" style="margin-bottom:12px"><label for="rpTxt">${H.t('¿Qué pasó?','What happened?')}</label><textarea id="rpTxt"></textarea></div>
     <div class="field" style="margin-bottom:16px"><label for="rpFile">${H.t('Foto o video (opcional)','Photo or video (optional)')}</label><input id="rpFile" type="file" accept="image/*,video/*"></div>
@@ -2199,10 +2204,14 @@ function applyUser(){
   $('newContact').innerHTML = H.icon('plus') + `<span class="lbl">${H.t('Contacto nuevo','New contact')}</span>`; $('newContact').setAttribute('aria-label', H.t('Contacto nuevo','New contact'));
   $('mSearch').innerHTML = H.icon('search');
   $('sbxUser').innerHTML = H.team.map(u => `<option value="${u.id}" ${u.id===meId?'selected':''}>${u.name} · ${H.JOBS[u.jobs[0]][H.lang]}</option>`).join('');
+  document.querySelectorAll('#sbxLang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.flang === H.lang));
+  $('sbxAs').textContent = H.t('Ver como:','View as:');
+  const note = document.querySelector('.sbx span.m'); if (note) note.textContent = H.t('Datos de ejemplo. Nada se conecta a FUB, Twilio ni clientes reales.','Sample data. Nothing connects to FUB, Twilio or real clients.');
   renderMe(); renderBell(); render();
 }
 H.setUser = id => { meId = id; LS.set('me', id); applyUser(); };
 $('sbxUser').addEventListener('change', e => H.setUser(e.target.value));
+$('sbxLang').addEventListener('click', e => { const b = e.target.closest('[data-flang]'); if (!b) return; LS.set('force', b.dataset.flang); applyUser(); });
 H._boot = applyUser;
 }
 </script>
