@@ -4510,6 +4510,79 @@ H.register('marcador', { render(root) {
 
 }
 </script>
+<script>/* ---- zz-live.js ---- */
+{
+/* Live MLS homes for the v2 test pages (shared by JAG Homes v2 and Agent Hub v2).
+   Uses the SAME public home search the real site uses (Supabase edge function "home-search",
+   Repliers key stays on the server; jasonaguirregroup.us is already an allowed origin).
+   The sample listing objects are filled IN PLACE with real homes from the same area, so every
+   id, deal and offer that points at them keeps working. Clients and people stay sample data.
+   Where fetch is blocked (claude.ai previews), nothing changes and the drawn photos stay. */
+const G = window.V2 || window.H;
+const API = 'https://nyaxywghbpphjhwcmspd.supabase.co/functions/v1/home-search', CDN = 'https://cdn.repliers.io/';
+const AREAQ = [
+  ['Alief', {zip:'77083'}, 'houston'], ['Spring', {city:'Spring'}, 'houston'], ['Humble', {city:'Humble'}, 'houston'], ['Katy', {city:'Katy'}, 'houston'],
+  ['Pasadena', {city:'Pasadena'}, 'houston'], ['New Caney', {city:'New Caney'}, 'houston'], ['Cypress', {city:'Cypress'}, 'houston'], ['Conroe', {city:'Conroe'}, 'houston'],
+  ['Baytown', {city:'Baytown'}, 'houston'], ['Northeast Houston', {zip:'77016'}, 'houston'], ['Channelview', {city:'Channelview'}, 'houston'], ['Aldine', {zip:'77039'}, 'houston'],
+  ['Grand Prairie', {city:'Grand Prairie'}, 'dallas'], ['Mesquite', {city:'Mesquite'}, 'dallas'], ['Garland', {city:'Garland'}, 'dallas'], ['Irving', {city:'Irving'}, 'dallas']
+];
+const clamp = v => Math.max(20, Math.min(980, Math.round(v)));
+const xy = (lat, lng, region) => region === 'dallas'
+  ? { x: clamp(300 + (lng + 97.0) * 1050), y: clamp(560 + (32.70 - lat) * 1095) }
+  : { x: clamp(150 + (lng + 95.82) * 845), y: clamp(50 + (30.31 - lat) * 863) };
+const img = p => !p ? '' : /^https?:/.test(p) ? p : CDN + p + '?class=medium';
+const title = s => String(s || '').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+function addrOf(a){ return [a.streetNumber, a.streetDirectionPrefix || a.streetDirection, title(a.streetName), a.streetSuffix].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim(); }
+function shape(r, area, region){
+  const d = r.details || {}, a = r.address || {}, m = r.map || {};
+  const price = +r.listPrice || 0, imgs = (r.images || []).slice(0, 5).map(img).filter(Boolean);
+  const hoaRaw = parseFloat(d.HOAFee) || 0, tax = r.taxRate ? +(+r.taxRate).toFixed(2) : (r.taxes && r.taxes.annualAmount && price ? +(r.taxes.annualAmount / price * 100).toFixed(2) : 2.5);
+  const p = xy(+m.latitude, +m.longitude, region), dom = +r.daysOnMarket || 0;
+  const status = r.state === 'pending' ? 'pending' : (r.state === 'soon' || dom <= 7) ? 'new' : 'active';
+  return { price, beds: +d.numBedrooms || 3, baths: +d.numBathrooms || 2, sqft: parseInt(d.sqft, 10) || 0, year: parseInt(d.yearBuilt, 10) || 0,
+    lot: r.lot && r.lot.acres ? Math.round(r.lot.acres * 43560) : 0, addr: addrOf(a) || title(a.neighborhood) || area, city: title(a.city) || area, zip: a.zip || '',
+    area, region, x: p.x, y: p.y, status, dom, hoa: hoaRaw > 150 ? Math.round(hoaRaw / 12) : Math.round(hoaRaw), tax,
+    school: '—', photos: Math.max(1, imgs.length), imgs, newc: !!r.newConstruction, builder: r.builder || null,
+    mls: r.mlsNumber, county: a.area || '', sub: title(a.neighborhood) || '', lotLegal: G.t ? G.t('Lote y bloque: en el MLS', 'Lot and block: in the MLS') : '',
+    brokerage: (r.office && r.office.brokerageName) || (((r.agents || [])[0] || {}).brokerage || {}).name || '', live: true };
+}
+async function load(){
+  const list = (G.data && G.data.listings) || G.listings; if (!list || !list.length || typeof fetch !== 'function') return;
+  const want = new Set(list.map(l => l.area));
+  const qs = AREAQ.filter(q => want.has(q[0]));
+  const res = await Promise.all(qs.map(([area, q, region]) => fetch(API + '?' + new URLSearchParams({ ...q, minPrice:'170000', maxPrice:'460000', minBedrooms:'3' }))
+    .then(r => r.ok ? r.json() : null).catch(() => null).then(j => ({ area, region, j }))));
+  const pool = {}, seen = new Set();
+  res.forEach(({ area, region, j }) => { pool[area] = ((j && j.listings) || []).filter(r => r.images && r.images.length >= 3 && r.map && r.map.latitude && !seen.has(r.mlsNumber) && seen.add(r.mlsNumber)).map(r => shape(r, area, region)); });
+  const total = Object.values(pool).reduce((n, a) => n + a.length, 0);
+  if (total < 6) return;                                   /* blocked or empty: keep the sample homes */
+  const byRegion = { houston: [], dallas: [] }; Object.values(pool).forEach(a => a.forEach(x => byRegion[x.region].push(x)));
+  const used = new Set();
+  const next = l => { const a = (pool[l.area] || []).find(x => !used.has(x.mls)) || byRegion[l.region].find(x => !used.has(x.mls)); if (a) used.add(a.mls); return a; };
+  list.forEach(l => { const r = next(l); if (r) Object.assign(l, r); });
+  /* deals point at listings by id: keep their numbers in step with the real home now behind that id */
+  (G.clients || []).forEach(c => { if (c.deal && c.deal.listingId){ const l = list.find(x => x.id == c.deal.listingId); if (l && l.live){ c.deal.price = l.price; if (c.deal.offer) c.deal.offer = Math.round(l.price * .98 / 500) * 500; } } });
+  G.liveMLS = true;
+  const art = G.art, label = G.photoLabel;
+  G.art = (id, i = 0) => { const l = list.find(x => x.id == id); return l && l.imgs && l.imgs.length ? l.imgs[i % l.imgs.length] : art(id, i); };
+  G.photoLabel = i => G.liveMLS ? (G.t ? G.t('Foto ', 'Photo ') : 'Foto ') + (i + 1) : label(i);
+  note(); G.rerender && G.rerender();
+}
+/* who listed it: shown on every home page / home drawer (MLS display rules) */
+const credit = l => l && l.brokerage ? `<p class="zz-credit" style="font-size:12.5px;color:#787683;margin:10px 0 0">${G.t('Listado por', 'Listed by')} ${G.esc(l.brokerage)} · MLS #${G.esc(l.mls)} · ${G.t('Información del MLS (HAR / NTREIS), sujeta a cambios.', 'MLS information (HAR / NTREIS), subject to change.')}</p>` : '';
+function note(){
+  const txt = G.t('Casas reales en venta del MLS, en vivo. Los clientes y las personas siguen siendo de ejemplo.', 'Real homes for sale from the MLS, live. Clients and people are still sample data.');
+  const small = document.querySelector('.sbx small'); if (small){ small.textContent = txt; small.dataset.es = 'Casas reales en venta del MLS, en vivo. Los clientes y las personas siguen siendo de ejemplo.'; small.dataset.en = 'Real homes for sale from the MLS, live. Clients and people are still sample data.'; }
+  const m = document.querySelector('.sbx span.m'); if (m) m.textContent = txt;
+}
+if (G.on) G.on('route', rt => { if (!G.liveMLS) return; note();
+  if (rt && rt.r === 'listing') setTimeout(() => { const host = document.querySelector('.scr-listing'); const l = G.listing && G.listing(rt.p); if (host && l && !host.querySelector('.zz-credit')){ const d = document.createElement('div'); d.style.padding = '0 20px 120px'; d.innerHTML = credit(l); host.appendChild(d); } }, 60); });
+if (G.drawer){ const od = G.drawer; G.drawer = (html, o) => { const el = od(html, o); if (G.liveMLS && el){ const l = (G.listings || []).find(x => x.mls && String(html).includes(x.mls)); if (l && !el.querySelector('.zz-credit')){ const d = document.createElement('div'); d.style.padding = '0 20px 24px'; d.innerHTML = credit(l); el.appendChild(d); } } return el; }; }
+if (G.on) G.on('route', () => { if (G.liveMLS) note(); });
+load().catch(e => console.warn('live MLS homes not loaded', e));
+
+}
+</script>
 <script>{ try { window.H._boot(); } catch(e) { console.error(e); } }</script>
 </body>
 </html>
